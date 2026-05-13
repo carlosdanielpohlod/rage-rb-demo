@@ -13,7 +13,18 @@ Minimal REST API using [rage.rb](https://github.com/rage-rb/rage) + ActiveRecord
 docker compose up
 ```
 
-The database is created and seeded automatically on first run.
+Migrations and seed run automatically on server start.
+
+## Migrations
+
+Migrations live in `db/migrate/` and are applied automatically at boot via `ActiveRecord::MigrationContext`.
+
+To run them manually:
+
+```bash
+docker compose run --rm app bundle exec ruby -e \
+  "require './config/application'; ActiveRecord::MigrationContext.new('db/migrate').migrate"
+```
 
 ## Endpoints
 
@@ -36,9 +47,11 @@ app/
     post.rb
 config/
   initializers/
-    database.rb                 # schema setup on boot
+    database.rb                 # runs migrations and seed on boot
   database.yml
   routes.rb
 db/
-  seeds.rb                      # initial data
+  migrate/
+    20260513000000_create_posts.rb
+  seeds.rb
 ```
